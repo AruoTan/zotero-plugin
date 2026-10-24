@@ -1,0 +1,5 @@
+{
+    "init": true,
+    "name": "zotero-plugin",
+    "image": "aruowis-dev-base:1"
+}
