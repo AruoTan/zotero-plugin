@@ -1,6 +1,10 @@
 /* Plugin lifecycle entry point. Feature modules are bundled before this file. */
 
-var ZoteroPluginFeatures = [ZoteroPluginSelectionPopup, ZoteroPluginHandwrittenText];
+var ZoteroPluginFeatures = [
+  ZoteroPluginSelectionPopup,
+  ZoteroPluginHandwrittenText,
+  ZoteroPluginBlackTextSidebarFilter,
+];
 
 function install() {}
 function uninstall() {}

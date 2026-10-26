@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "zotero-plugin",
-  "version": "1.0.3",
-  "description": "Personal Zotero customizations: Alt-triggered selection popups and handwritten PDF text annotations.",
+  "version": "1.0.5",
+  "description": "Personal Zotero customizations: Alt-triggered selection popups, handwritten PDF text, and black text sidebar filtering.",
   "author": "AruoTan",
   "homepage_url": "https://github.com/AruoTan/zotero-plugin",
   "applications": {

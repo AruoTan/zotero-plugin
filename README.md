@@ -22,6 +22,14 @@ The style applies to both existing and newly created text annotations while the 
 
 This is a local reader display setting. It does not store a font choice in annotation data or embed the font into exported PDFs; other devices and external PDF viewers may display a different font.
 
+### Hide black text annotations in the sidebar
+
+In PDF readers, pure black (`#000000`) annotations made with **Add Text** are hidden from the sidebar's annotation list. This applies to existing and new text annotations. Changing their color updates the list automatically: black hides the entry, and another color restores it.
+
+The text remains visible and editable on the PDF page, and the saved annotation data is preserved. Other annotation types, including black highlights, underlines, and sticky notes, keep their normal sidebar entries. Disabling the plugin restores the hidden entries. Search and color filters continue to work on the remaining entries.
+
+The black swatch is also hidden from the sidebar's color filter. If black is already selected, the plugin deselects it before hiding the swatch, preserving other selected colors, tags, and the search query. Disabling the plugin restores the swatch.
+
 ## Install
 
 1. Build `dist/zotero-plugin.xpi` from source, or download `zotero-plugin.xpi` from the [latest release](https://github.com/AruoTan/zotero-plugin/releases/latest) when available.
@@ -39,7 +47,8 @@ Zotero requires an update URL even for personal plugins. The manifest points to 
 │   ├── bootstrap.js              # Plugin lifecycle and feature registration
 │   └── features/
 │       ├── selection-popup.js    # Alt-triggered selection popup
-│       └── handwritten-text.js   # PDF text annotation handwriting
+│       ├── handwritten-text.js   # PDF text annotation handwriting
+│       └── black-text-sidebar-filter.js # Hide black Add Text sidebar entries
 ├── assets/fonts/                 # Bundled font, license, and source attribution
 ├── tests/                        # Feature lifecycle regression tests
 ├── scripts/
@@ -79,7 +88,7 @@ See [the development guide](docs/development.md) for feature organization and ve
 
 ## Compatibility
 
-- Zotero 7.x: the popup feature was previously tested on 7.0.24; handwriting has source and automated checks but still needs validation in Zotero.
+- Zotero 7.x: the popup feature was previously tested on 7.0.24; handwriting and sidebar filtering have source and automated checks but still need validation in Zotero.
 - Zotero 8–9: untested.
 - Zotero 10.0.x: declared compatible; installer requirements and reader integration checked against 10.0.6 source. Runtime validation is still required.
 
