@@ -49,6 +49,10 @@ test("built XPI has a Zotero-compatible manifest and root bootstrap entry points
       "the sidebar filter must be bundled and registered in the plugin lifecycle");
     assert.equal(typeof scope.ZoteroPluginBlackTextSidebarFilter.startup, "function");
     assert.equal(typeof scope.ZoteroPluginBlackTextSidebarFilter.shutdown, "function");
+    assert.ok(scope.ZoteroPluginFeatures.includes(scope.ZoteroPluginAnnotationHitTargets),
+      "annotation hit targets must be bundled and registered");
+    assert.equal(typeof scope.ZoteroPluginAnnotationHitTargets.startup, "function");
+    assert.equal(typeof scope.ZoteroPluginAnnotationHitTargets.shutdown, "function");
     const fontFiles = fs.readdirSync(path.join(projectDir, "assets/fonts"))
       .filter(name => /\.(ttf|otf|woff2?)$/i.test(name)).sort();
     assert.deepEqual(fontFiles, ["HetangYuese-Regular.ttf"],

@@ -31,6 +31,8 @@ FONT_FAMILIES=("ZoteroPluginHandwriting")
   printf '\n'
   cat "$PROJECT_DIR/src/features/black-text-sidebar-filter.js"
   printf '\n'
+  cat "$PROJECT_DIR/src/features/annotation-hit-targets.js"
+  printf '\n'
   cat "$PROJECT_DIR/src/bootstrap.js"
 } > "$BUILD_DIR/bootstrap.js"
 

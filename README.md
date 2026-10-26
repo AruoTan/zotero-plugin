@@ -30,6 +30,14 @@ The text remains visible and editable on the PDF page, and the saved annotation 
 
 The black swatch is also hidden from the sidebar's color filter. If black is already selected, the plugin deselects it before hiding the swatch, preserving other selected colors, tags, and the search query. Disabling the plugin restores the swatch.
 
+### Select content beneath underlines and area annotations
+
+In PDF readers, click or drag on underlined text or inside an **area annotation** to interact with the underlying content, including selecting text and copying it. Click the underline stroke or the area annotation's border to select the annotation. A small hit allowance makes thin strokes easier to click at different zoom levels.
+
+This also applies when the annotation is already selected. Its visible range or resize handles remain usable. Highlights and other annotation types keep their normal behavior. Existing and new PDF readers, split views, and rotated pages are supported; disabling the plugin restores Zotero's original hit targets. Annotation content and saved positions are unchanged.
+
+If the hit-target feature encounters an error, that PDF view falls back to Zotero's original hit targets so normal mouse interaction can continue.
+
 ## Install
 
 1. Build `dist/zotero-plugin.xpi` from source, or download `zotero-plugin.xpi` from the [latest release](https://github.com/AruoTan/zotero-plugin/releases/latest) when available.
@@ -48,7 +56,8 @@ Zotero requires an update URL even for personal plugins. The manifest points to 
 │   └── features/
 │       ├── selection-popup.js    # Alt-triggered selection popup
 │       ├── handwritten-text.js   # PDF text annotation handwriting
-│       └── black-text-sidebar-filter.js # Hide black Add Text sidebar entries
+│       ├── black-text-sidebar-filter.js # Hide black Add Text sidebar entries
+│       └── annotation-hit-targets.js # Underline strokes and area borders only
 ├── assets/fonts/                 # Bundled font, license, and source attribution
 ├── tests/                        # Feature lifecycle regression tests
 ├── scripts/
@@ -88,7 +97,7 @@ See [the development guide](docs/development.md) for feature organization and ve
 
 ## Compatibility
 
-- Zotero 7.x: the popup feature was previously tested on 7.0.24; handwriting and sidebar filtering have source and automated checks but still need validation in Zotero.
+- Zotero 7.x: the popup feature was previously tested on 7.0.24; handwriting, sidebar filtering, and annotation hit targets have source and automated checks but still need validation in Zotero.
 - Zotero 8–9: untested.
 - Zotero 10.0.x: declared compatible; installer requirements and reader integration checked against 10.0.6 source. Runtime validation is still required.
 
