@@ -14,36 +14,77 @@ The reader's text-selection popup is hidden by default. Hold **Alt** before rele
 
 Works in the PDF reader and (best-effort) in the EPUB / snapshot readers.
 
+### Handwritten PDF text
+
+Text inserted with the PDF reader's **Add Text** tool uses **荷塘月色手写体 (Hetang Yuese)** for Chinese, its native handwritten English letters, and digits. A single face keeps mixed-language annotations consistent in stroke weight and style. The font is embedded in the generated script, works offline, and does not need to be installed on your system.
+
+The style applies to both existing and newly created text annotations while the plugin is enabled, including split views. Disabling the plugin restores the reader's normal font. PDF body text, notes, and the Zotero interface keep their existing fonts.
+
+This is a local reader display setting. It does not store a font choice in annotation data or embed the font into exported PDFs; other devices and external PDF viewers may display a different font.
+
 ## Install
 
-1. Build `zotero-plugin.xpi` from source, or download it from the [latest release](https://github.com/AruoTan/zotero-plugin/releases/latest) when available.
+1. Build `dist/zotero-plugin.xpi` from source, or download `zotero-plugin.xpi` from the [latest release](https://github.com/AruoTan/zotero-plugin/releases/latest) when available.
 2. In Zotero: **Tools → Plugins → ⚙ → Install Plugin From File…** and pick the `.xpi`.
 
 Plugin ID: `vnmhgrjk@sfirstmail.com`.
 
-## Build from source
+Zotero requires an update URL even for personal plugins. The manifest points to this repository's `master/update.json`; the supplied file has an empty update list, so it advertises no releases. Publish that file at the configured URL if using update checks.
 
-```sh
-zip -r zotero-plugin.xpi manifest.json bootstrap.js
+## Project structure
+
+```text
+.
+├── src/
+│   ├── bootstrap.js              # Plugin lifecycle and feature registration
+│   └── features/
+│       ├── selection-popup.js    # Alt-triggered selection popup
+│       └── handwritten-text.js   # PDF text annotation handwriting
+├── assets/fonts/                 # Bundled font, license, and source attribution
+├── tests/                        # Feature lifecycle regression tests
+├── scripts/
+│   ├── build.sh                  # Bundle and package the plugin
+│   └── dev-install.sh            # Build and install into a local profile
+├── docs/
+│   └── development.md            # Development conventions and validation
+├── dist/                         # Generated packages (ignored by Git)
+├── .devcontainer/                # Development container configuration
+├── .editorconfig                # Formatting conventions
+├── manifest.json                # Plugin metadata
+├── update.json                  # Update manifest (empty release list)
+└── LICENSE
 ```
 
-No toolchain is required.
+## Build from source
+
+Run from the repository root:
+
+```sh
+bash scripts/build.sh
+```
+
+Requires Bash, `zip`, `base64`, and `tr`. The output is `dist/zotero-plugin.xpi`; no JavaScript toolchain is required.
 
 ## Development install
 
 Quit Zotero, then run:
 
 ```sh
-ZOTERO_PROFILE="/path/to/your/zotero/profile" bash dev-install.sh
+ZOTERO_PROFILE="/path/to/your/zotero/profile" bash scripts/dev-install.sh
 ```
 
-The script builds `zotero-plugin.xpi` and installs it into the specified profile. Restart Zotero to load the plugin.
+The profile must already contain an `extensions` directory. The script builds and installs the plugin, then clears extension startup caches. Restart Zotero to load the plugin.
+
+See [the development guide](docs/development.md) for feature organization and verification steps.
 
 ## Compatibility
 
-- Zotero 7.x (tested on 7.0.24)
-- Zotero 8 (untested)
+- Zotero 7.x: the popup feature was previously tested on 7.0.24; handwriting has source and automated checks but still needs validation in Zotero.
+- Zotero 8–9: untested.
+- Zotero 10.0.x: declared compatible; installer requirements and reader integration checked against 10.0.6 source. Runtime validation is still required.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Plugin code: MIT — see [LICENSE](LICENSE).
+
+Bundled font: see [font attribution](assets/fonts/README.md) and [Hetang Yuese author declaration](assets/fonts/HetangYuese-NOTICE.txt).

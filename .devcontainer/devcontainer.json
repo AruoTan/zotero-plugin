@@ -1,5 +1,5 @@
 {
     "init": true,
     "name": "zotero-plugin",
-    "image": "aruowis-dev-base:1"
+    "image": "aruowis-dev-base:latest"
 }

@@ -1,0 +1,22 @@
+荷塘月色手写体 / Hetang Yuese
+
+Author: 豆角豆角
+Font version: Version 1.000; January 15, 2025
+Original filename: 荷塘月色手写体 Regular.ttf
+Bundled filename: HetangYuese-Regular.ttf
+SHA-256: a829f60335600d182b382bf1186cf57d78ea2ea23be33aa6c44cfb5bf05cbd16
+
+Author's release announcement:
+https://mp.weixin.qq.com/s/UH2XYR_ey_EOslvx3cz9sQ
+Release announcement reproduced at:
+https://www.maoken.com/freefonts/24739.html
+
+The release announcement, as reproduced by the source above, states that
+individuals and companies may use the font free of charge. Copyright remains
+with the font's rights holders. This notice records provenance and does not
+replace the author's terms or grant a new license.
+
+Unmodified binary retrieved from @fontpkg/hetangyuese@1.0.0:
+https://registry.npmjs.org/@fontpkg/hetangyuese/-/hetangyuese-1.0.0.tgz
+The package's SHA-512 integrity was verified before extraction. The font is
+embedded unchanged as a base64 data URL for use in this personal plugin.
