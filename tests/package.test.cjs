@@ -13,7 +13,7 @@ test("built XPI has a Zotero-compatible manifest and root bootstrap entry points
   try {
     const fixtureDir = path.join(tempDir, "project with spaces");
     fs.mkdirSync(fixtureDir);
-    for (const entry of ["manifest.json", "scripts", "src", "assets"]) {
+    for (const entry of ["manifest.json", "scripts", "src", "assets", "vendor"]) {
       fs.cpSync(path.join(projectDir, entry), path.join(fixtureDir, entry), { recursive: true });
     }
     execFileSync("bash", [path.join(fixtureDir, "scripts/build.sh")], { cwd: tempDir });
@@ -53,6 +53,13 @@ test("built XPI has a Zotero-compatible manifest and root bootstrap entry points
       "annotation hit targets must be bundled and registered");
     assert.equal(typeof scope.ZoteroPluginAnnotationHitTargets.startup, "function");
     assert.equal(typeof scope.ZoteroPluginAnnotationHitTargets.shutdown, "function");
+    assert.ok(scope.ZoteroPluginFeatures.includes(scope.ZoteroPluginMathText),
+      "MathJax text previews must be bundled and registered");
+    assert.equal(typeof scope.ZoteroPluginMathText.shutdown, "function");
+    assert.ok(scope.ZoteroPluginFeatures.includes(scope.ZoteroPluginTextAnnotationSize),
+      "rendered annotation sizing must be bundled and registered");
+    assert.match(scope.ZoteroPluginMathJax.render("x^2"), /<svg/,
+      "the bundled renderer must work without DOM, module loaders, or network");
     const fontFiles = fs.readdirSync(path.join(projectDir, "assets/fonts"))
       .filter(name => /\.(ttf|otf|woff2?)$/i.test(name)).sort();
     assert.deepEqual(fontFiles, ["HetangYuese-Regular.ttf"],
@@ -60,6 +67,7 @@ test("built XPI has a Zotero-compatible manifest and root bootstrap entry points
     assert.deepEqual([...entries].sort(), [
       "assets/fonts/HetangYuese-NOTICE.txt",
       "bootstrap.js", "manifest.json",
+      "vendor/mathjax/LICENSE",
     ], "archive must not retain obsolete font resources");
     const embeddedFonts = scope.ZoteroPluginHandwritingFonts;
     assert.deepEqual(Array.from(embeddedFonts, font => font.family),

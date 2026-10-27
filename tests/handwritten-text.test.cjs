@@ -58,7 +58,11 @@ function documentMock({ load, loads = {}, uri = "resource://zotero/reader/reader
   doc.createElement = () => ({
     remove() { const index = doc.styles.indexOf(this); if (index !== -1) doc.styles.splice(index, 1); },
   });
-  doc.querySelectorAll = (selector) => selector === "iframe" ? doc.frames : doc.textAnnotations;
+  doc.querySelectorAll = selector => {
+    if (selector === "iframe") return doc.frames;
+    if (selector.startsWith("#annotationsView")) return [];
+    return doc.textAnnotations;
+  };
   return doc;
 }
 

@@ -5,6 +5,8 @@ var ZoteroPluginFeatures = [
   ZoteroPluginHandwrittenText,
   ZoteroPluginBlackTextSidebarFilter,
   ZoteroPluginAnnotationHitTargets,
+  ZoteroPluginMathText,
+  ZoteroPluginTextAnnotationSize,
 ];
 
 function install() {}

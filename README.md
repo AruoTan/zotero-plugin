@@ -18,9 +18,38 @@ Works in the PDF reader and (best-effort) in the EPUB / snapshot readers.
 
 Text inserted with the PDF reader's **Add Text** tool uses **荷塘月色手写体 (Hetang Yuese)** for Chinese, its native handwritten English letters, and digits. A single face keeps mixed-language annotations consistent in stroke weight and style. The font is embedded in the generated script, works offline, and does not need to be installed on your system.
 
-The style applies to both existing and newly created text annotations while the plugin is enabled, including split views. Disabling the plugin restores the reader's normal font. PDF body text, notes, and the Zotero interface keep their existing fonts.
+The style applies to both existing and newly created text annotations while the plugin is enabled, including split views and their entries in the sidebar's annotation list. Sidebar Add Text content uses the same face while viewing formulas or editing their source; MathJax symbols keep their mathematical glyphs. Other annotation types and sidebar headers keep their existing fonts. Disabling the plugin restores the reader's normal font. PDF body text, notes, and the rest of the Zotero interface keep their existing fonts.
 
 This is a local reader display setting. It does not store a font choice in annotation data or embed the font into exported PDFs; other devices and external PDF viewers may display a different font.
+
+### Fit Add Text bounds after editing
+
+After leaving an **Add Text** editor on the PDF page or in the sidebar, the plugin fits the annotation rectangle to its rendered handwriting and MathJax content. Explicit line breaks are preserved, and wrapped text stays within the available width. A small padding prevents fractional glyphs from being clipped. Finishing a manual resize preserves the chosen width and recalculates the height from rendered content, removing extra lines caused by measuring LaTeX source. Re-entering editing restores room for the original source text.
+
+The native selection border and click target use the new dimensions, and Zotero saves the updated rectangle through its normal annotation manager, including undo support. The rendered top-left stays anchored when possible, including rotated annotations; near page edges the rectangle is kept on the page. Read-only annotations are left unchanged. This happens after editing; opening a PDF does not resize all saved annotations. Disabling the plugin stops automatic sizing and retains already saved dimensions.
+
+### MathJax in PDF text annotations
+
+Use the PDF reader's **Add Text** tool to mix ordinary text with LaTeX formulas:
+
+```text
+质能关系：$E=mc^2$
+行内公式：\(x_1 + x_2\)
+$$\frac{1}{\sqrt{1+x^2}}$$
+\[\int_0^1 x^2\,dx = \frac{1}{3}\]
+```
+
+While editing, the native text box shows the original LaTeX source. Click outside it or press **Escape** to show the rendered formulas. Edit it again using Zotero's normal text annotation interaction. Ordinary Chinese and English text keeps the handwritten font; mathematical symbols use MathJax's mathematical glyphs.
+
+MathJax is bundled and works offline, including fractions, roots, integrals, matrices, and AMS notation. Both existing and new annotations work in split views. PDF page previews follow the native color, font size, zoom, and rotation and shrink to fit the annotation rectangle; enlarge that rectangle when more room is needed. Invalid or unsupported formulas remain as source text. To write a literal dollar sign beside formulas, use `\$`.
+
+The PDF reader's sidebar annotation list also renders formulas in annotation comments and extracted text. Native rich-text formatting and line breaks are preserved. Focus the original editor to edit the source, then leave it to restore the formula preview. Selecting, searching, filtering, and dragging annotations retain their normal behavior, including the rule that hides black Add Text entries. Other annotation types keep their usual collapsed preview limit; expand an entry to see longer formulas.
+
+For **Add Text** entries, the complete handwritten text and formulas scale together to fit the card width. The preview uses the PDF annotation's font size and wrapping width before scaling, preserving line breaks, spacing, and formula placement. Resizing the sidebar recalculates the scale without reflowing the content. Plain text and unsupported formula source receive the same layout treatment. The card height follows the scaled content, and entering edit mode restores Zotero's normal source editor. This is a sidebar display change and does not resize the saved PDF annotation.
+
+Hover over an **Add Text** card for 600 ms to open an enlarged preview with the same handwriting, formulas, and line layout. Move into the popup to scroll longer content. Moving away, pressing **Escape**, clicking to edit, or scrolling the sidebar dismisses it. Other annotation types retain their normal hover behavior.
+
+This renders formulas locally in the PDF reader. Saved annotations retain their LaTeX source; automatic fitting updates their rectangle after editing as described above. Exported PDFs and other PDF viewers do not receive the rendered preview. Disabling the plugin restores Zotero's source-text display. PDF body text and note editors are unaffected.
 
 ### Hide black text annotations in the sidebar
 
@@ -57,8 +86,11 @@ Zotero requires an update URL even for personal plugins. The manifest points to 
 │       ├── selection-popup.js    # Alt-triggered selection popup
 │       ├── handwritten-text.js   # PDF text annotation handwriting
 │       ├── black-text-sidebar-filter.js # Hide black Add Text sidebar entries
-│       └── annotation-hit-targets.js # Underline strokes and area borders only
+│       ├── annotation-hit-targets.js # Underline strokes and area borders only
+│       ├── math-text.js           # Offline MathJax in PDF text and sidebar entries
+│       └── text-annotation-size.js # Fit native bounds after editing
 ├── assets/fonts/                 # Bundled font, license, and source attribution
+├── vendor/mathjax/               # Pinned SVG engine, adapter source, and license
 ├── tests/                        # Feature lifecycle regression tests
 ├── scripts/
 │   ├── build.sh                  # Bundle and package the plugin
@@ -97,7 +129,7 @@ See [the development guide](docs/development.md) for feature organization and ve
 
 ## Compatibility
 
-- Zotero 7.x: the popup feature was previously tested on 7.0.24; handwriting, sidebar filtering, and annotation hit targets have source and automated checks but still need validation in Zotero.
+- Zotero 7.x: the popup feature was previously tested on 7.0.24; handwriting, sidebar filtering, annotation hit targets, and MathJax previews have source and automated checks but still need validation in Zotero.
 - Zotero 8–9: untested.
 - Zotero 10.0.x: declared compatible; installer requirements and reader integration checked against 10.0.6 source. Runtime validation is still required.
 
@@ -106,3 +138,5 @@ See [the development guide](docs/development.md) for feature organization and ve
 Plugin code: MIT — see [LICENSE](LICENSE).
 
 Bundled font: see [font attribution](assets/fonts/README.md) and [Hetang Yuese author declaration](assets/fonts/HetangYuese-NOTICE.txt).
+
+Bundled MathJax: Apache-2.0 — see [license](vendor/mathjax/LICENSE) and [source attribution](vendor/mathjax/README.md).

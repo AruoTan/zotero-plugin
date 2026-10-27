@@ -3,6 +3,8 @@
 var ZoteroPluginHandwrittenText = (() => {
   const FONT_NAMES = ZoteroPluginHandwritingFonts.map(font => font.family);
   const STYLE_ID = "zotero-plugin-handwritten-text";
+  const SIDEBAR_ROW = "#annotationsView [data-sidebar-annotation-id]";
+  const SIDEBAR_MARKER = "data-zotero-plugin-handwritten-text";
   const READERS = new Map();
   const EVENTS = ["renderToolbar", "renderTextSelectionPopup"];
   let session;
@@ -49,6 +51,8 @@ var ZoteroPluginHandwrittenText = (() => {
     state.observer?.disconnect();
     state.document?.removeEventListener("load", state.onLoad, true);
     state.window?.removeEventListener("unload", state.onUnload);
+    for (const row of state.sidebarRows) row.removeAttribute(SIDEBAR_MARKER);
+    state.sidebarRows.clear();
     if (state.globalWindow && state.globalWindow.computedFontFamily === state.fontFamily) {
       state.globalWindow.computedFontFamily = state.originalFamily;
     }
@@ -77,6 +81,8 @@ var ZoteroPluginHandwrittenText = (() => {
       // Keep their font consistent with the PDF text, including before first paint.
       style.textContent = `
         .customAnnotationLayer textarea.textAnnotation,
+        ${SIDEBAR_ROW}[${SIDEBAR_MARKER}] > .preview > .comment .editor,
+        ${SIDEBAR_ROW}[${SIDEBAR_MARKER}] > .preview > .comment .editor > .content,
         body > textarea[style*="visibility: hidden"][style*="pointer-events: none"][style*="position: absolute"] {
           font-family: ${state.fontFamily} !important;
         }
@@ -96,6 +102,16 @@ var ZoteroPluginHandwrittenText = (() => {
 
   function scanDocuments(state) {
     if (!isActive(state)) return;
+    const sidebarRows = new Set();
+    for (const row of state.document.querySelectorAll(SIDEBAR_ROW)) {
+      if (!row.querySelector(".preview > header > .start > .icon-text")) continue;
+      sidebarRows.add(row);
+      if (!row.hasAttribute(SIDEBAR_MARKER)) row.setAttribute(SIDEBAR_MARKER, "");
+    }
+    for (const row of state.sidebarRows) {
+      if (!sidebarRows.has(row)) row.removeAttribute(SIDEBAR_MARKER);
+    }
+    state.sidebarRows = sidebarRows;
     const documents = new Set([state.document]);
     for (const iframe of state.document.querySelectorAll("iframe")) {
       // Only PDF view frames, including a secondary split view.
@@ -119,7 +135,7 @@ var ZoteroPluginHandwrittenText = (() => {
 
   async function attach(reader) {
     if (!session || reader?._type !== "pdf" || READERS.has(reader)) return;
-    const state = { reader, session, documents: new Map(), closed: false };
+    const state = { reader, session, documents: new Map(), sidebarRows: new Set(), closed: false };
     READERS.set(reader, state);
     try {
       await reader._initPromise;
@@ -142,7 +158,9 @@ var ZoteroPluginHandwrittenText = (() => {
       doc.addEventListener("load", state.onLoad, true);
       win.addEventListener("unload", state.onUnload, { once: true });
       state.observer = new win.MutationObserver(() => scanDocuments(state));
-      state.observer.observe(doc.documentElement, { childList: true, subtree: true });
+      state.observer.observe(doc.documentElement, {
+        childList: true, subtree: true, attributes: true, attributeFilter: ["class"],
+      });
       scanDocuments(state);
     } catch (error) {
       // A later startup may already have attached a fresh state for this reader.

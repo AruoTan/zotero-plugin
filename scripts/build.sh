@@ -9,6 +9,8 @@ BUILD_DIR="$(mktemp -d "${TMPDIR:-/tmp}/zotero-plugin-build.XXXXXX")"
 trap 'rm -rf -- "$BUILD_DIR"' EXIT
 
 mkdir -p "$BUILD_DIR/assets/fonts"
+mkdir -p "$BUILD_DIR/vendor/mathjax"
+cp "$PROJECT_DIR/vendor/mathjax/LICENSE" "$BUILD_DIR/vendor/mathjax/LICENSE"
 cp "$PROJECT_DIR/assets/fonts/HetangYuese-NOTICE.txt" "$BUILD_DIR/assets/fonts/HetangYuese-NOTICE.txt"
 cp "$PROJECT_DIR/manifest.json" "$BUILD_DIR/manifest.json"
 FONT_FILES=("HetangYuese-Regular.ttf")
@@ -24,6 +26,8 @@ FONT_FAMILIES=("ZoteroPluginHandwriting")
     printf '" },\n'
   done
   printf '];\n\n'
+  cat "$PROJECT_DIR/vendor/mathjax/tex-svg.js"
+  printf '\n'
   # Keep feature modules before the lifecycle entry point.
   cat "$PROJECT_DIR/src/features/selection-popup.js"
   printf '\n'
@@ -33,12 +37,16 @@ FONT_FAMILIES=("ZoteroPluginHandwriting")
   printf '\n'
   cat "$PROJECT_DIR/src/features/annotation-hit-targets.js"
   printf '\n'
+  cat "$PROJECT_DIR/src/features/math-text.js"
+  printf '\n'
+  cat "$PROJECT_DIR/src/features/text-annotation-size.js"
+  printf '\n'
   cat "$PROJECT_DIR/src/bootstrap.js"
 } > "$BUILD_DIR/bootstrap.js"
 
 (
   cd "$BUILD_DIR"
-  zip -q zotero-plugin.xpi manifest.json bootstrap.js assets/fonts/HetangYuese-NOTICE.txt
+  zip -q zotero-plugin.xpi manifest.json bootstrap.js assets/fonts/HetangYuese-NOTICE.txt vendor/mathjax/LICENSE
 )
 mv -f "$BUILD_DIR/zotero-plugin.xpi" "$DIST_DIR/zotero-plugin.xpi"
 printf 'Built %s\n' "$DIST_DIR/zotero-plugin.xpi"
