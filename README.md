@@ -4,6 +4,12 @@ A personal Zotero plugin for custom reader behavior and other features as needed
 
 ## Features
 
+### Hide PDF annotation tags in the library tag selector
+
+The tag selector at the bottom of Zotero's left library pane excludes tags contributed only by PDF annotations. Tags assigned to regular items, notes, or attachments remain visible. If the same tag is used on both a PDF annotation and an ordinary item, its ordinary item association is retained. Tags in PDF readers remain available.
+
+This follows the current library, collection, saved search, and **Display All Tags** setting, including selections across libraries. Annotation-only colored tags are also hidden; unused colored presets remain available. Adding or removing tags updates the list, and any hidden active tag filter is cleared while other selected tags remain selected. No tags or color settings are deleted. Disabling the plugin restores the native tag list.
+
 ### Alt-triggered selection popup
 
 The reader's text-selection popup is hidden by default. Hold **Alt** before releasing the mouse to show it for that selection.
@@ -95,7 +101,8 @@ Zotero requires an update URL even for personal plugins. The manifest points to 
 │       ├── annotation-hit-targets.js # Underline strokes and area borders only
 │       ├── math-text.js           # Offline MathJax in PDF text and sidebar entries
 │       ├── text-annotation-size.js # Fit native bounds after editing
-│       └── sidebar-annotation-navigation.js # Locate from a header double-click
+│       ├── sidebar-annotation-navigation.js # Locate from a header double-click
+│       └── library-tag-filter.js  # Exclude PDF annotation tags from the library selector
 ├── assets/fonts/                 # Bundled font, license, and source attribution
 ├── vendor/mathjax/               # Pinned SVG engine, adapter source, and license
 ├── tests/                        # Feature lifecycle regression tests

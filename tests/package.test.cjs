@@ -60,6 +60,8 @@ test("built XPI has a Zotero-compatible manifest and root bootstrap entry points
       "rendered annotation sizing must be bundled and registered");
     assert.ok(scope.ZoteroPluginFeatures.includes(scope.ZoteroPluginSidebarAnnotationNavigation),
       "sidebar double-click navigation must be bundled and registered");
+    assert.ok(scope.ZoteroPluginFeatures.includes(scope.ZoteroPluginLibraryTagFilter),
+      "library PDF annotation tag filtering must be bundled and registered");
     assert.match(scope.ZoteroPluginMathJax.render("x^2"), /<svg/,
       "the bundled renderer must work without DOM, module loaders, or network");
     const fontFiles = fs.readdirSync(path.join(projectDir, "assets/fonts"))

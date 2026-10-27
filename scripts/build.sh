@@ -43,6 +43,8 @@ FONT_FAMILIES=("ZoteroPluginHandwriting")
   printf '\n'
   cat "$PROJECT_DIR/src/features/sidebar-annotation-navigation.js"
   printf '\n'
+  cat "$PROJECT_DIR/src/features/library-tag-filter.js"
+  printf '\n'
   cat "$PROJECT_DIR/src/bootstrap.js"
 } > "$BUILD_DIR/bootstrap.js"
 

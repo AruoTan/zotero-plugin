@@ -8,6 +8,7 @@ var ZoteroPluginFeatures = [
   ZoteroPluginMathText,
   ZoteroPluginTextAnnotationSize,
   ZoteroPluginSidebarAnnotationNavigation,
+  ZoteroPluginLibraryTagFilter,
 ];
 
 function install() {}

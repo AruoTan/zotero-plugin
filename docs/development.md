@@ -48,7 +48,7 @@ unzip -l dist/zotero-plugin.xpi
 
 The archive should contain `manifest.json` and the generated `bootstrap.js` at its root, plus `assets/fonts/HetangYuese-NOTICE.txt` and `vendor/mathjax/LICENSE`. The font bytes and MathJax engine are embedded in `bootstrap.js`. Revisit this list when adding packaged resources.
 
-With Node.js 18 or later available, run the feature regression tests:
+With Node.js 22.13 or later available (including the built-in `node:sqlite` module), run the feature regression tests:
 
 ```sh
 node --test tests/*.test.cjs
@@ -121,6 +121,16 @@ Sizing tests cover rotated anchors, native update ownership, split views, stale 
 A double-click in `.preview > header` calls the active view's native navigation with the annotation ID. The `.start` area (icon/page label), buttons, links, editable elements, and other interactive header controls are excluded so page-label editing and menus retain their native behavior. Modified double-clicks do not navigate. Capture listeners are delegated, so late/replaced sidebar rows need no observer. The static patch factory, callbacks, and navigation arguments are created in the reader realm to respect Gecko security boundaries. New/split views are discovered on click; obsolete view patches are released. Shutdown removes listeners and restores original descriptors while preserving wrappers installed later by other plugins.
 
 `tests/sidebar-annotation-navigation.test.cjs` covers click dispatch, selection/editing preservation, header targeting, keyboard and unrelated navigation, native callback ownership and arguments, split/replaced views, lifecycle cleanup, and failure fallback. Verify in Zotero 10.0.6 that selecting an unselected annotation leaves the PDF scroll position unchanged and double-clicking the blank header locates it exactly once. Check all annotation types, Ctrl/Shift multi-selection, content editing, page-label editing, menus, dragging, filtering, split views, new tabs/separate windows, and disabling/re-enabling. The isolated native runtime probe additionally checks actual React selection, PDF scroll positions, page-label editing, and restoration on disable.
+
+## Library tag selector filtering
+
+`src/features/library-tag-filter.js` filters only main-window tag selector containers. Read-only SQL checks tag associations in the native collection/search result tables and in the selected libraries. An association is excluded when its item is an annotation whose parent attachment has the PDF MIME type. Item, attachment, note, and non-PDF annotation tags remain eligible, including shared names and separate manual/automatic types. The current view determines scope; **Display All Tags** uses the selected libraries. Global tag APIs and reader tag selectors are left intact.
+
+Keep these read queries starting with `SELECT`. In Zotero 10.0.6, `DBConnection.queryAsync()` executes a statement starting with `WITH` but returns `undefined` instead of its rows. The regression database adapter models this behavior; testing SQLite alone misses it. Derived tables keep the association summary compatible with the native adapter.
+
+The feature wraps each container's `getTagsAndScope()` and reconciles native incremental notifications. A temporary color map during render prevents PDF-only colored tags from being reinserted, retaining the saved map and unused color presets. Hidden selected filters are cleared through the native selection callback. Main-window creation, tag-pane recreation, asynchronous shutdown, and original method descriptors are handled explicitly. Disabling rebuilds from native data; closing a window only releases its patches. Database failures log a diagnostic and return native results.
+
+`tests/library-tag-filter.test.cjs` runs the actual read queries against an in-memory SQLite database, with the native query return contract and simulated container updates. It covers PDF and EPUB annotations, shared tags, manual/automatic types, collection and cross-library scope, colored presets, active filters, incremental changes, recreated containers/windows, restoration, and pending-query cleanup. An isolated Zotero 10.0.6 Linux probe also exercises the packaged tag container's native querying, rendering, notification handlers, automatic-tag toggle, and **Display All Tags**. It uses the packaged `DBConnection.queryAsync()` and `Sqlite.sys.mjs` against a disposable in-memory database, reproduces the `WITH` result loss, and checks filtering without user data. In Zotero, check existing and new annotation tags, tag removal/rename, collections, saved searches, quicksearch, colored tags, **Display All Tags**, and disabling/re-enabling. Confirm the PDF reader's tag list remains available and ordinary library tag filtering still works.
 
 ## Formatting
 
