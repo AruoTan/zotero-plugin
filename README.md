@@ -67,6 +67,12 @@ This also applies when the annotation is already selected. Its visible range or 
 
 If the hit-target feature encounters an error, that PDF view falls back to Zotero's original hit targets so normal mouse interaction can continue.
 
+### Locate sidebar annotations with a header double-click
+
+In PDF readers, a single click in the sidebar annotation list selects the annotation without scrolling the PDF. Double-click the blank area of the annotation's top header bar to scroll to its location. This applies to all annotation types and uses the active PDF view in split readers.
+
+Double-clicking annotation content retains its native editing behavior. The page label, menu button, and other header controls retain their own actions. Modifier clicks still use native multi-selection; keyboard navigation and navigation initiated elsewhere keep their normal behavior. Disabling the plugin restores single-click PDF navigation.
+
 ## Install
 
 1. Build `dist/zotero-plugin.xpi` from source, or download `zotero-plugin.xpi` from the [latest release](https://github.com/AruoTan/zotero-plugin/releases/latest) when available.
@@ -88,7 +94,8 @@ Zotero requires an update URL even for personal plugins. The manifest points to 
 │       ├── black-text-sidebar-filter.js # Hide black Add Text sidebar entries
 │       ├── annotation-hit-targets.js # Underline strokes and area borders only
 │       ├── math-text.js           # Offline MathJax in PDF text and sidebar entries
-│       └── text-annotation-size.js # Fit native bounds after editing
+│       ├── text-annotation-size.js # Fit native bounds after editing
+│       └── sidebar-annotation-navigation.js # Locate from a header double-click
 ├── assets/fonts/                 # Bundled font, license, and source attribution
 ├── vendor/mathjax/               # Pinned SVG engine, adapter source, and license
 ├── tests/                        # Feature lifecycle regression tests

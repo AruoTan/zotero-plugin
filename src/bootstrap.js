@@ -7,6 +7,7 @@ var ZoteroPluginFeatures = [
   ZoteroPluginAnnotationHitTargets,
   ZoteroPluginMathText,
   ZoteroPluginTextAnnotationSize,
+  ZoteroPluginSidebarAnnotationNavigation,
 ];
 
 function install() {}
